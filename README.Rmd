@@ -23,8 +23,12 @@ install.packages("devtools")
   
 ## Gitのインストール, GitHubのアカウント作成, リモートリポジトリの新規作成
 - Gitを(https://git-scm.com/downloads) からインストールする. ユーザー名,メールアドレス設定, etc.
-- GitHubアカウントを作成して(https://github.com), リモートリポジトリを新規作成する. その際に
-**...or push an existing repository from the command line**のところにあるコマンドをコピーしておく. 
+- GitHubアカウントを作成して(https://github.com), リモートリポジトリを新規作成する. 
+  - RepositoriesからNewを選択. リポジトリ名, Descriptionを記入
+  - 必要に応じて, defaultのファイルを作成する.
+      - `Add.gitignore`: R
+      - `Add a license`: MIT License
+  - **...or push an existing repository from the command line**のところにあるコマンドをコピーしておく. 
 
 ```{}
 git remote add origin https://github.com/[アカウント名]/[リポジトリ名]
@@ -71,7 +75,7 @@ RStudioから`File -> New Project -> Version Control -> Git`を選んで, `Repos
 - これらを適宜編集してリモートリポジトリと同期させる.  
 - 後述の操作で作成するファイルも含まれているので, これが初期状態ではない.   
   
-```{r echo=F}
+```{r echo=F} 
 
 cat(system("tree", intern = T), sep = "\n")
 
@@ -84,7 +88,7 @@ cat(system("tree", intern = T), sep = "\n")
 - ターミナルはRStudioのGitのペインの歯車マークから起動できる. 
 - 登録した後で`Tools -> Project Options -> Git/SVN`を選択して`Origin`のところがリモートリポジトリのアドレスになっていることを確認する. 
   
-```{}
+```{} 
 git remote add origin https://github.com/shkonishi/hello.git
 git commit -m "first commit" 
 git push -u origin master
@@ -409,7 +413,7 @@ git commit --amend -m "add binary data" # 直前のコミットメッセージ�
   - `pick`を一括で`fixup`(コミットメッセージの破棄)に変更する場合 `:%s/pick/fixup/gc`
   - `:wq`セーブして終了. `:q`セーブせずに終了
 - RStudioのGitクライアントが起動している状態で`git rebase`するとエラーになる. 
-- `git rebase`でうまく行かないあ場合はリポジトリを削除することにした.
+- `git rebase`でうまく行かない場合はリポジトリを削除することにする.
   
 ```{bash eval=F}
 #コミットログを確認 コミットのハッシュ値とメッセージを確認 
@@ -435,6 +439,8 @@ git rebase --abort
   - ログインしてから, Settingsのページの下の方にあるDelete this repositoryを選択し.リポジトリ名を入力して確定
 - ローカルリポジトリの削除
   - ローカルリポジトリがある場所で, `rm -rf .git`
+
+
 
   
 ## 環境
