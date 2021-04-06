@@ -1,5 +1,9 @@
-#' Hello, World!
-#' @description Prints 'Hello, world!'.
+#' Hello, World!  
+#' 
+#' Prints 'Hello, world!'.  
+#' 
+#' Repeat 'n' times printing for 'Hello, world!'  
+#' 
 #' @usage hello(n)
 #' @param n Number of replication
 #' @return Character vector, length of n

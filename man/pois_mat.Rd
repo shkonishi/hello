@@ -4,7 +4,9 @@
 \name{pois_mat}
 \alias{pois_mat}
 \title{Sample data document}
-\format{An object of matrix with 100 rows and 100 colmns.}
+\format{
+An object of matrix with 100 rows and 100 colmns.
+}
 \usage{
 data(pois_mat)
 }

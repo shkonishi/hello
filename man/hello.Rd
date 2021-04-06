@@ -15,6 +15,9 @@ Character vector, length of n
 \description{
 Prints 'Hello, world!'.
 }
+\details{
+Repeat 'n' times printing for 'Hello, world!'
+}
 \examples{
 hello(3)
 }
