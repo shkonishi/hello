@@ -1,7 +1,7 @@
 Rのパッケージを作成する
 ================
 S.Konishi
-2019-06-29
+2021-04-06
 
 -----
 
@@ -92,6 +92,7 @@ RStudioから`File -> New Project -> Version Control -> Git`を選んで,
     ## ├── NAMESPACE
     ## ├── R
     ## │   ├── hello.R
+    ## │   ├── mfuns.R
     ## │   ├── pois_mat.R
     ## │   └── sysdata.rda
     ## ├── README.Rmd
@@ -104,9 +105,10 @@ RStudioから`File -> New Project -> Version Control -> Git`を選んで,
     ## │       └── pois.txt
     ## └── man
     ##     ├── hello.Rd
+    ##     ├── mfuns.Rd
     ##     └── pois_mat.Rd
     ## 
-    ## 5 directories, 13 files
+    ## 5 directories, 15 files
 
 ## ローカルリポジトリとリモートリポジトリを同期.
 
@@ -231,7 +233,7 @@ hello(n = 3)
     少なくとも一人の著者(aut), 保守担当者(cre)を書く. 雛形をRStudioで作成すると`Author`と,
     `Maintainer`に別れている.
   - **`Imports`**: パッケージの依存関係, 自動的にインストールされる.
-    `devtools::use_package("dplyr")`で自動的にDESCRIPTIONファイルに追記できる.
+    `devtools::use_package("stats")`で自動的にDESCRIPTIONファイルに追記できる.
   - **`Suggests`**: パッケージでは使わないがテストで使う場合等, 自動でインストールされない.
   - **`Depends`**: `devtools::check()`で警告が出る場合はここに依存バージョンを書く
   - **`License`**: MITライセンスの場合ファイルを置く必要がある.
@@ -241,7 +243,7 @@ hello(n = 3)
 
 ``` r
 # Importsの追記 
-devtools::use_package("dplyr")
+devtools::use_package("stats")
 
 # Autho@R
 person("Shogo", "Konishi", email = "アカウント名@gmail.com", role = c("aut", "cre")) 
@@ -254,14 +256,14 @@ person("Shogo", "Konishi", email = "アカウント名@gmail.com", role = c("aut
     ## Author: Shogo Konishi <shkonishi@gmail.com> 
     ## Maintainer: Shogo Konishi <shkonishi@gmail.com>
     ## Imports: 
-    ##     dplyr
+    ##     stats
     ## Description: Exersice of R package development
     ##     Use four spaces when indenting paragraphs within the Description.
     ## Depends: R (>= 2.10)
     ## License: MIT + file LICENSE
     ## Encoding: UTF-8
     ## LazyData: true
-    ## RoxygenNote: 6.1.1
+    ## RoxygenNote: 7.1.1
 
 ### ドキュメント作成
 
@@ -276,7 +278,7 @@ Rスクリプトの中にroxygen形式でコメントを書いてから. **`devt
   - 以下の3つに関しては, それぞれタグなしで, 3パラグラフで記述しても良い.
       - **`@title`** タイトル  
       - **`@description`** スクリプトの説明
-      - **`@details`** 引数の説明の後に表示される. 関数がどのように機能するかについて詳細に説明
+      - **`@details`** 関数がどのように機能するかについて詳細に説明. 引数の説明の後に表示される.
 
 <!-- end list -->
 
@@ -334,20 +336,17 @@ Rスクリプトの中にroxygen形式でコメントを書いてから. **`devt
 
   - 直接編集しない.
   - スクリプトにroxygen形式のコメントを書いておいて`devtools::document()`するとNAMESPACEファイルに追記してくれる.
-    雛形の中に含まれているNAMESPACEファイルは削除しておく. 書き方は後述.
+    雛形の中に含まれているNAMESPACEファイルは削除しておく.
 
 <!-- end list -->
 
-``` 
-
-# 対象パッケージから全ての関数をインポート(非推奨)  
-import(ggplot2) 
-import(dplyr)
-
-# 指定された関数をインポート
-importFrom(ggplot2, ggplot)
-importFrom(magrittr, %>%)
-```
+    # 対象パッケージから全ての関数をインポート(非推奨)  
+    import(ggplot2) 
+    import(dplyr)
+    
+    # 指定された関数をインポート
+    importFrom(ggplot2, ggplot)
+    importFrom(magrittr, %>%)
 
 ### `devtools::check()`を実行
 
@@ -403,7 +402,7 @@ data.frame(license = sapply(mylibs, function(x)packageDescription(x, fields = 'L
     ## dendextend            GPL-2 | GPL-3
     ## dplyr            MIT + file LICENSE
     ## dynamicTreeCut           GPL (>= 2)
-    ## ggplot2        GPL-2 | file LICENSE
+    ## ggplot2          MIT + file LICENSE
     ## ggrepel        GPL-3 | file LICENSE
     ## gplots                        GPL-2
     ## gridExtra                GPL (>= 2)
@@ -618,16 +617,13 @@ sessionInfo()
     ## [1] hello_0.1.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_1.0.1        knitr_1.23        magrittr_1.5     
-    ##  [4] usethis_1.5.0     devtools_2.0.2    pkgload_1.0.2    
-    ##  [7] R6_2.4.0          rlang_0.4.0       stringr_1.4.0    
-    ## [10] tools_3.5.2       pkgbuild_1.0.3    xfun_0.7         
-    ## [13] sessioninfo_1.1.1 cli_1.1.0         withr_2.1.2      
-    ## [16] remotes_2.0.4     htmltools_0.3.6   yaml_2.2.0       
-    ## [19] assertthat_0.2.1  digest_0.6.19     rprojroot_1.3-2  
-    ## [22] crayon_1.3.4      processx_3.3.1    callr_3.2.0      
-    ## [25] fs_1.3.1          ps_1.3.0          curl_3.3         
-    ## [28] testthat_2.1.1    glue_1.3.1        memoise_1.1.0    
-    ## [31] evaluate_0.14     rmarkdown_1.13    stringi_1.4.3    
-    ## [34] compiler_3.5.2    desc_1.2.0        backports_1.1.4  
-    ## [37] prettyunits_1.0.2
+    ##  [1] compiler_3.5.2    prettyunits_1.1.1 remotes_2.2.0     tools_3.5.2      
+    ##  [5] testthat_3.0.2    digest_0.6.27     pkgbuild_1.2.0    pkgload_1.2.0    
+    ##  [9] evaluate_0.14     memoise_2.0.0     lifecycle_1.0.0   rlang_0.4.10     
+    ## [13] cli_2.4.0         curl_4.3          yaml_2.2.1        xfun_0.21        
+    ## [17] fastmap_1.1.0     withr_2.4.1       stringr_1.4.0     knitr_1.31       
+    ## [21] desc_1.2.0        fs_1.5.0          devtools_2.3.2    rprojroot_2.0.2  
+    ## [25] glue_1.4.2        R6_2.5.0          processx_3.4.5    rmarkdown_2.7    
+    ## [29] sessioninfo_1.1.1 callr_3.5.1       purrr_0.3.4       magrittr_2.0.1   
+    ## [33] ps_1.5.0          ellipsis_0.3.1    htmltools_0.5.1.1 usethis_2.0.1    
+    ## [37] assertthat_0.2.1  stringi_1.5.3     cachem_1.0.4      crayon_1.4.1
