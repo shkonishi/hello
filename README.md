@@ -1,49 +1,14 @@
 Rのパッケージを作成する
 ================
 S.Konishi
-2019-03-03
+2019-06-29
 
-|                                          |
-| ---------------------------------------- |
-| Rのパッケージを作成してGitHubで管理する. 調べた内容を適宜追加していく. |
+-----
 
-Table of Contents
-=================
+  Rのパッケージを作成してGitHubで管理する.  
+  調べた内容を適宜追加していく.
 
-   * [Rのパッケージを作成する](#rのパッケージを作成する)
-      * [devtoolsのインストール](#devtoolsのインストール)
-      * [Gitのインストール, GitHubのアカウント作成, リモートリポジトリの新規作成](#gitのインストール-githubのアカウント作成-リモートリポジトリの新規作成)
-      * [Rパッケージの雛形を作成しGitのローカルリポジトリとする](#rパッケージの雛形を作成しgitのローカルリポジトリとする)
-         * [新規にRパッケージを作成する場合](#新規にrパッケージを作成する場合)
-         * [リモートリポジトリをローカルに複製する場合](#リモートリポジトリをローカルに複製する場合)
-         * [パッケージの中身を確認](#パッケージの中身を確認)
-      * [ローカルリポジトリとリモートリポジトリを同期.](#ローカルリポジトリとリモートリポジトリを同期)
-      * [パッケージをGitHubからダウンロードしてインストール](#パッケージをgithubからダウンロードしてインストール)
-      * [ローカルリポジトリの編集](#ローカルリポジトリの編集)
-         * [.gitignore](#gitignore)
-         * [.Rbuildignore](#rbuildignore)
-         * [DESCRIPTION](#description)
-         * [NAMESPACE](#namespace)
-         * [roxygen2を使ってドキュメント作成](#roxygen2を使ってドキュメント作成)
-            * [roxygen形式のコメント書式](#roxygen形式のコメント書式)
-            * [roxygen形式のコメント書式(NAMESPACE用)](#roxygen形式のコメント書式namespace用)
-            * [examplesのコードをnot runにする.](#examplesのコードをnot-runにする)
-         * [devtools::check()を実行](#devtoolscheckを実行)
-         * [LICENSEを決める](#licenseを決める)
-         * [README.mdの作成](#readmemdの作成)
-         * [github のmdファイルに目次をつける. Table of Contents](#github-のmdファイルに目次をつける-table-of-contents)
-      * [外部データをパッケージに含める](#外部データをパッケージに含める)
-         * [バイナリデータをdataディレクトリ置く場合](#バイナリデータをdataディレクトリ置く場合)
-         * [R/にバイナリデータのdocumentを作成する.](#rにバイナリデータのdocumentを作成する)
-         * [データファイルをinst/extdataに置く場合](#データファイルをinstextdataに置く場合)
-      * [コードスタイル整形](#コードスタイル整形)
-      * [コミットメッセージについて](#コミットメッセージについて)
-         * [直前のコミットにまとめるgit commit --amend -m "message"](#直前のコミットにまとめるgit-commit---amend--m-message)
-         * [複数のコミットを 1 つにまとめるgit rebase -i](#複数のコミットを-1-つにまとめるgit-rebase--i)
-         * [リポジトリの削除](#リポジトリの削除)
-      * [環境](#環境)
-
-
+-----
 
 ## devtoolsのインストール
 
@@ -60,10 +25,10 @@ install.packages("devtools")
   - Gitを(<https://git-scm.com/downloads>) からインストールする. ユーザー名,メールアドレス設定,
     etc.
   - GitHubアカウントを作成して(<https://github.com>), リモートリポジトリを新規作成する.
-      - RepositoriesからNewを選択. リポジトリ名, Descriptionを記入
-      - 必要に応じて, defaultのファイルを作成する.
-          - `Add.gitignore`: R
-          - `Add a license`: MIT License
+      - RepositoriesからNewを選択. リポジトリ名, Descriptionを記入.  
+      - 必要に応じて, defaultのファイルを作成する. ローカルリポジトリを同期させる場合は作成しない.
+          - `Add.gitignore`: R  
+          - `Add a license`: MIT License  
       - **…or push an existing repository from the command
         line**のところにあるコマンドをコピーしておく.
 
@@ -81,36 +46,38 @@ install.packages("devtools")
     Project`するとRパッケージの雛形が作られると同時にgitのローカルリポジトリが作られる.
   - RStudioからは見えないが, パッケージを作成した場所に`.git`というディレクトリができている. ターミナルから`git
     init`を実行してもできる.
-  - Rのコンソールからパッケージの雛形を作成する場合は`devtools::create`を実行する.
+  - Rのコンソールからパッケージの雛形を作成する場合は`usethis::create_package`を実行する.
+      - フィールドの項目をデフォルトで作成する場合. \`\`
 
 <!-- end list -->
 
 ``` r
-# ローカルリポジトリを作る場所
-setwd("~/pub/rlib")
-
 # 雛形を作成
-devtools::create(pkgname,
-  description=list(
+path <- "~/pub/bin/rpkg/hello"
+usethis::create_package(
+  path = path,
+  fields = list(
       Package="hello", # パッケージ名
-      Title="Exersice of R package development", # パッケージの説明
+      Title="Exersice of R package development", # パッケージタイトル
       Version = "0.1.0",
-      Author = "Shogo Konishi <shkonishi@gmail.com>",
-      Maintainer="The package maintainer <shkonishi@gmail.com>",
+      Author = "Shogo Konishi <hoge@gmail.com>",
+      Maintainer="The package maintainer <hoge@gmail.com>",
       Description="Exersice of R package development",
       License='MIT + file LICENSE',
       Encoding="UTF-8",
       LazyData="true"
+      )
 )
 ```
 
 ### リモートリポジトリをローカルに複製する場合
 
 RStudioから`File -> New Project -> Version Control -> Git`を選んで,
-`Repository URL:`を入れて`Create Project`でローカルリポジトリーにクローンできる. -
-ローカルリポジトリを~/bin/Rpkg/hello以下に作りたい場合. - Repository
-URL: `https://github.com/shkonishi/hello` - Project directory name:
-`hello` - Create project as subdirectory of: `~/bin/Rpkg`
+`Repository URL:`を入れて`Create Project`でローカルリポジトリーにクローンできる.  
+\- ローカルリポジトリを~/bin/Rpkg/hello以下に作りたい場合. - Repository URL:
+`https://github.com/shkonishi/hello`  
+\- Project directory name: `hello`  
+\- Create project as subdirectory of: `~/bin/Rpkg`
 
 ### パッケージの中身を確認
 
@@ -147,19 +114,23 @@ URL: `https://github.com/shkonishi/hello` - Project directory name:
     Project`すると, 付属のGitクライアントツールを使えるようになる.
   - Gitペインからよく使うgitコマンド, commit(ファイルの変更等をローカルリポジトリへ反映させる)や,
     push(ローカルリポジトリの変更をリモートリポジトリへ反映)することができる.  
-  - リモートリポジトリの登録`git remote add`はターミナルを起動して行う.  
-  - ターミナルはRStudioのGitのペインの歯車マークから起動できる.
+  - リモートリポジトリの登録`git remote
+    add`はターミナルを起動して行う(ターミナルはRStudioのGitのペインの歯車マークから起動できる).  
   - 登録した後で`Tools -> Project Options ->
     Git/SVN`を選択して`Origin`のところがリモートリポジトリのアドレスになっていることを確認する.
+  - ローカルリポジトリ名を変更した場合リモートの新しいアドレスと対応させる`git remote set-url origein
+    https://github.com/shkonishi/hoge.git` .
 
 <!-- end list -->
 
-    git remote add origin https://github.com/shkonishi/hello.git
-    git commit -m "first commit" 
-    git push -u origin master
-    
-    # ローカルリポジトリ名を変更した場合リモートの新しいアドレスと対応させる. 
-    git remote set-url origin https://github.com/shkonishi/test.git
+``` bash
+git remote add origin https://github.com/shkonishi/hello.git
+git commit -m "first commit" 
+git push -u origin master
+
+# ローカルリポジトリ名を変更した場合リモートの新しいアドレスと対応させる. 
+git remote set-url origin https://github.com/shkonishi/test.git
+```
 
 ## パッケージをGitHubからダウンロードしてインストール
 
@@ -179,16 +150,17 @@ hello(n = 3)
 
 ## ローカルリポジトリの編集
 
-パッケージに変更を加えたら, だいたい以下の流れを繰り返す.
-
-1.  各種ファイルを編集`DESCRIPTION`, `.Rbuildignore`, `.gitignore`.
-2.  Rスクリプトを書いて, `R/`ディレクトリに置く.
-3.  ドキュメントの作成(スクリプトの中にroxygen形式のコメントを書く. )
-4.  `devtools::document()`を実行する. `NAMESPACE`とドキュメント(`man/*.Rd`)が作られる.
-5.  RStudioのBuildペインからCheckを実行する(もしくはコンソールから`devtools::check`)
-6.  Install and Restartを実行する.
-7.  必要に応じて`LICENCE`, `README.md`を作成する.
-8.  リモートリポジトリと同期する.
+  - 最初にパッケジのメタデータ等のファイルを作成する.
+    1.  各種ファイルを編集`.gitignore`, `DESCRIPTION`, `.Rbuildignore`
+    2.  必要に応じて`LICENCE`, `README.md`を作成する.
+  - パッケージに変更を加えたら, だいたい以下の流れを繰り返す.
+    1.  Rスクリプトを書いて, `R/`ディレクトリに置く.
+    2.  ドキュメントの作成(スクリプトの中にroxygen形式のコメントを書く. )
+    3.  `devtools::document()`を実行する.
+        `NAMESPACE`とドキュメント(`man/*.Rd`)が作られる.
+    4.  RStudioのBuildペインからCheckを実行する(もしくはコンソールから`devtools::check`)
+    5.  Install and Restartを実行する.
+    6.  リモートリポジトリと同期する.
 
 ### .gitignore
 
@@ -241,7 +213,7 @@ hello(n = 3)
     ここにリストされているファイルはバンドルパッケージ(.tar.gz)に含まれない.
   - Perl互換の正規表現で書く.
   - `.DS_Store`とかも書いておく.
-    正しく書くためには`devtools::use_build_ignore(".DS_Store")`とすれば書き込んでくれる.
+    正しく書くためには`usethis::use_build_ignore(".DS_Store")`とすれば書き込んでくれる.
 
 <!-- end list -->
 
@@ -291,26 +263,7 @@ person("Shogo", "Konishi", email = "アカウント名@gmail.com", role = c("aut
     ## LazyData: true
     ## RoxygenNote: 6.1.1
 
-### NAMESPACE
-
-  - 直接編集しない.
-  - スクリプトにroxygen形式のコメントを書いておいて`devtools::document()`するとNAMESPACEファイルに追記してくれる.
-    雛形の中に含まれているNAMESPACEファイルは削除しておく. 書き方は後述.
-
-<!-- end list -->
-
-``` 
-
-# 対象パッケージから全ての関数をインポート(非推奨)  
-import(ggplot2) 
-import(dplyr)
-
-# 指定された関数をインポート
-importFrom(ggplot2, ggplot)
-importFrom(magrittr, %>%)
-```
-
-### roxygen2を使ってドキュメント作成
+### ドキュメント作成
 
 Rスクリプトの中にroxygen形式でコメントを書いてから. **`devtools::document()`**
 を作業中のプロジェクトの中で実行すると,
@@ -319,35 +272,45 @@ Rスクリプトの中にroxygen形式でコメントを書いてから. **`devt
 
 #### roxygen形式のコメント書式
 
-  - **`@description`** スクリプトの説明  
+  - `#' @タグ名 内容`のように記述
+  - 以下の3つに関しては, それぞれタグなしで, 3パラグラフで記述しても良い.
+      - **`@title`** タイトル  
+      - **`@description`** スクリプトの説明
+      - **`@details`** 引数の説明の後に表示される. 関数がどのように機能するかについて詳細に説明
+
+<!-- end list -->
+
+``` r
+#' Hello, World!  
+#' 
+#' Prints 'Hello, world!'.  
+#' 
+#' Repeat 'n' times printing for 'Hello, world!'  
+#' 
+```
+
   - **`@usage`** 書式. ドキュメントとスクリプトで引数の順番が違っているとエラー
   - **`@param`** 引数. 一箇所で複数の引数の場合, **`@param x,y ...`**  
   - **`@return`** 関数の出力  
-  - **`@examples`** `devtools::check()`で実行される.  
+  - **`@examples`** `devtools::check()`で実行される.
+  - **`@references`** リファレンス. `\href{リンクアドレス}{リンク名}`.
+  - **`@export`** はコード本体の直前に書く.
+  - **`@import`** で非推奨, なるべく **`@importFrom`** で関数名を指定する.
+  - **`@importFrom`** に何も記述しないまま **`devtools::document()`** を実行すると
+    ~~`importFrom("",)`ができてしまう. 手動で消す必要有.~~ エラーが出る.  
+  - できるだけスクリプトの中で **`::`** を明示して, 依存パッケージの関数を利用するようにする. Checkの時間短縮にもなる.
   - **`@export`**
 
 <!-- end list -->
 
 ``` r
-#' Hello, World!　
-#' @description Prints 'Hello, world!'. 　
 #' @usage hello(n) 　
 #' @param n Number of replication 
 #' @return Character vector, length of n 　
 #' @examples hello(3)　
-```
-
-#### roxygen形式のコメント書式(NAMESPACE用)
-
-  - **`@export`** はコード本体の直前に書く
-  - **`@import`** で非推奨, なるべく **`@importFrom`** で関数名を指定する.
-  - **`@importFrom`** に何も記述しないまま **`devtools::document()`** を実行すると
-    ~~`importFrom("",)`ができてしまう. 手動で消す必要有. ~~ エラーが出る.  
-  - できるだけスクリプトの中で **`::`** を明示して, 依存パッケージの関数を利用するようにする. Checkの時間短縮にもなる.
-
-<!-- end list -->
-
-``` r
+#' @import base    
+#' @importFrom base plot  
+#' @importClassesFrom package class 
 #' @import package    
 #' @importFrom package function  
 #' @importClassesFrom package class 
@@ -367,11 +330,23 @@ Rスクリプトの中にroxygen形式でコメントを書いてから. **`devt
 #' }
 ```
 
-``` r
-#'@examples 
-#' ## Not run:  
-#' print(x) 
-#' ## End(Not run)
+#### NAMESPACE
+
+  - 直接編集しない.
+  - スクリプトにroxygen形式のコメントを書いておいて`devtools::document()`するとNAMESPACEファイルに追記してくれる.
+    雛形の中に含まれているNAMESPACEファイルは削除しておく. 書き方は後述.
+
+<!-- end list -->
+
+``` 
+
+# 対象パッケージから全ての関数をインポート(非推奨)  
+import(ggplot2) 
+import(dplyr)
+
+# 指定された関数をインポート
+importFrom(ggplot2, ggplot)
+importFrom(magrittr, %>%)
 ```
 
 ### `devtools::check()`を実行
@@ -423,64 +398,40 @@ mylibs <- unlist(strsplit(packageDescription("rsko", fields = 'Imports'), ",\n")
 data.frame(license = sapply(mylibs, function(x)packageDescription(x, fields = 'License')))
 ```
 
-    ##                                  license
-    ## amap                                 GPL
-    ## dendextend                 GPL-2 | GPL-3
-    ## dplyr                 MIT + file LICENSE
-    ## dynamicTreeCut                GPL (>= 2)
-    ## ggrepel             GPL-3 | file LICENSE
-    ## ggplot2             GPL-2 | file LICENSE
-    ## gplots                             GPL-2
-    ## grDevices                Part of R 3.5.2
-    ## gridExtra                     GPL (>= 2)
-    ## magrittr              MIT + file LICENSE
-    ## pathview                     GPL (>=3.0)
-    ## plyr                  MIT + file LICENSE
-    ## readr          GPL (>= 2) | file LICENSE
-    ## RColorBrewer          Apache License 2.0
-    ## RISmed                        GPL (>= 2)
-    ## rskodat               MIT + file LICENSE
-    ## stringi                     file LICENSE
-    ## tibble                MIT + file LICENSE
-    ## tidyr                 MIT + file LICENSE
-    ## zoo                        GPL-2 | GPL-3
-
-### README.mdの作成
-
-README.mdは必須ではないが, 作ることが推奨されている. このドキュメントはRStudioを用いてRmakdown形式で書いている.
-REAMDE.RmdをRStudioから作成する際に`From Template`を選んで`GitHub
-Document(Markdown)`を選択する.
-**Knit**ボタンを押せばRコードのchunkが実行されてGitHubへの公開に適したマークダウンファイル（.md）に変換してくれる.
-
-``` 
-   ---
-   title: Rのパッケージを作成する　
-   output: github_document　
-   ---
-```
-
-### github のmdファイルに目次をつける. Table of Contents
-
-``` bash
-wget https://raw.githubusercontent.com/ekalinin/github-markdown-toc/master/gh-md-toc
-chmod a+x gh-md-toc
-./gh-md-toc ./README.md 
-```
+    ##                             license
+    ## amap                            GPL
+    ## dendextend            GPL-2 | GPL-3
+    ## dplyr            MIT + file LICENSE
+    ## dynamicTreeCut           GPL (>= 2)
+    ## ggplot2        GPL-2 | file LICENSE
+    ## ggrepel        GPL-3 | file LICENSE
+    ## gplots                        GPL-2
+    ## gridExtra                GPL (>= 2)
+    ## knitr                           GPL
+    ## kableExtra       MIT + file LICENSE
+    ## magrittr         MIT + file LICENSE
+    ## pathview                GPL (>=3.0)
+    ## plyr             MIT + file LICENSE
+    ## RColorBrewer     Apache License 2.0
+    ## RISmed                   GPL (>= 2)
+    ## stringi                file LICENSE
+    ## tibble           MIT + file LICENSE
+    ## tidyr            MIT + file LICENSE
 
 ## 外部データをパッケージに含める
 
-1.  バイナリデータは, **`usethis::use_data(obj)`** で `data/` にエクスポートされる. その際,
-    データのドキュメントを`R/`ディレクトリに置く.
-2.  関数に必要なデータは, **`usethis::use_data(obj, internal=T)`**
-    で`R/`にエクスポートされる.
-3.  データファイルをパッケージに含めたい場合は `inst/extdata` を自分で作成してその中におく.
+1.  バイナリデータを, `data/` に置く.
+      - **`usethis::use_data(obj)`**　でオブジェクトを`R/`にエクスポート  
+      - **`usethis::use_data(obj,internal=T)`** で関数が利用するオブジェクトをエクスポート.
+2.  データファイルをパッケージに含める.
+      - `inst/extdata` を自分で作成してその中におく.
 
 ### バイナリデータをdataディレクトリ置く場合
 
-  - ~`devtools::use_data(obj, pkg = ".")`で `data/obj.rda`ファイルができている. ~
-  - 上記のやり方は廃止されるらしい. `usethis::use_data(obj)`で実行する
+  - **`usethis::use_data(obj)`** で `data/` にエクスポートされる.  
   - 関数が利用するためのデータを置く場合`usethis::use_data(obj, internal = T)`とする.
     `R/sysdata.rda`ができる. ユーザーからは利用できない.
+  - データのドキュメントを`R/`ディレクトリに置く.  
   - 関数の中で利用するためには`package名:::object名`で使用する
   - データセットのみのパッケージを作成する場合やデータセットをたくさん作る場合は`tools::add_datalist(getwd(),
     force = T)`　datalistファイルがdataディレクトリに作成される.
@@ -506,7 +457,6 @@ mat <- hello:::norm_mat
 
   - data名に対してファイルを作る. 例えば`pois_mat`というdataならば`pois_mat.R`を作成
   - roxygenコメントを以下のように書いて`devtools::document()`を実行.
-  - `＠references`リンクの書き方は`\href{リンクアドレス}{リンク名}`のように書く.
 
 <!-- end list -->
 
@@ -561,6 +511,28 @@ dat <- read.table(fp)
 # formatR::tidy_app()  
 ```
 
+## README.mdの作成
+
+README.mdは必須ではないが, 作ることが推奨されている. このドキュメントはRStudioを用いてRmakdown形式で書いている.
+REAMDE.RmdをRStudioから作成する際に`From Template`を選んで`GitHub
+Document(Markdown)`を選択する.
+**Knit**ボタンを押せばRコードのchunkが実行されてGitHubへの公開に適したマークダウンファイル（.md）に変換してくれる.
+
+``` 
+   ---
+   title: Rのパッケージを作成する　
+   output: github_document　
+   ---
+```
+
+### github のmdファイルに目次をつける. Table of Contents
+
+``` bash
+wget https://raw.githubusercontent.com/ekalinin/github-markdown-toc/master/gh-md-toc
+chmod a+x gh-md-toc
+./gh-md-toc ./README.md 
+```
+
 ## コミットメッセージについて
 
   - いい加減に日付ですましてきたが, 最低限変更内容がわかるようにする.
@@ -572,8 +544,8 @@ dat <- read.table(fp)
 
 ### 直前のコミットにまとめる`git commit --amend -m "message"`
 
-  - 直前のコミットメッセージを変更するのはRStudioからでも可能. GitペインからCommittを選択して`Amend
-    previous commit`
+  - 直前のコミットメッセージを変更するのはRStudioからでも可能. GitペインからCommitを選択して`Amend previous
+    commit`
 
 <!-- end list -->
 
@@ -614,7 +586,7 @@ git rebase -i "ハッシュ値"
 git rebase --abort
 ```
 
-### リポジトリの削除
+## リポジトリの削除
 
   - リモートリポジトリの削除
       - ログインしてから, Settingsのページの下の方にあるDelete this
@@ -630,7 +602,7 @@ sessionInfo()
 
     ## R version 3.5.2 (2018-12-20)
     ## Platform: x86_64-apple-darwin15.6.0 (64-bit)
-    ## Running under: macOS High Sierra 10.13.1
+    ## Running under: macOS High Sierra 10.13.6
     ## 
     ## Matrix products: default
     ## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
@@ -646,16 +618,16 @@ sessionInfo()
     ## [1] hello_0.1.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_1.0.0        knitr_1.21        magrittr_1.5     
-    ##  [4] usethis_1.4.0     devtools_2.0.1    pkgload_1.0.2    
-    ##  [7] R6_2.4.0          rlang_0.3.1       stringr_1.4.0    
-    ## [10] tools_3.5.2       pkgbuild_1.0.2    xfun_0.5         
-    ## [13] sessioninfo_1.1.1 cli_1.0.1         withr_2.1.2      
-    ## [16] remotes_2.0.2     htmltools_0.3.6   yaml_2.2.0       
-    ## [19] assertthat_0.2.0  digest_0.6.18     rprojroot_1.3-2  
-    ## [22] crayon_1.3.4      processx_3.2.1    callr_3.1.1      
-    ## [25] fs_1.2.6          ps_1.3.0          curl_3.3         
-    ## [28] testthat_2.0.1    glue_1.3.0        memoise_1.1.0    
-    ## [31] evaluate_0.13     rmarkdown_1.11    stringi_1.3.1    
-    ## [34] compiler_3.5.2    desc_1.2.0        backports_1.1.3  
+    ##  [1] Rcpp_1.0.1        knitr_1.23        magrittr_1.5     
+    ##  [4] usethis_1.5.0     devtools_2.0.2    pkgload_1.0.2    
+    ##  [7] R6_2.4.0          rlang_0.4.0       stringr_1.4.0    
+    ## [10] tools_3.5.2       pkgbuild_1.0.3    xfun_0.7         
+    ## [13] sessioninfo_1.1.1 cli_1.1.0         withr_2.1.2      
+    ## [16] remotes_2.0.4     htmltools_0.3.6   yaml_2.2.0       
+    ## [19] assertthat_0.2.1  digest_0.6.19     rprojroot_1.3-2  
+    ## [22] crayon_1.3.4      processx_3.3.1    callr_3.2.0      
+    ## [25] fs_1.3.1          ps_1.3.0          curl_3.3         
+    ## [28] testthat_2.1.1    glue_1.3.1        memoise_1.1.0    
+    ## [31] evaluate_0.14     rmarkdown_1.13    stringi_1.4.3    
+    ## [34] compiler_3.5.2    desc_1.2.0        backports_1.1.4  
     ## [37] prettyunits_1.0.2

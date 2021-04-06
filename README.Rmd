@@ -164,7 +164,7 @@ cat(system("less .Rbuildignore", intern = T), sep = "\n")
 ### DESCRIPTION
 - パッケージのメタデータ
 - **`Author@R`**: `devtools::create`でDESCRIPTIONファイルを作る場合`person`関数で埋め込む. 少なくとも一人の著者(aut), 保守担当者(cre)を書く. 雛形をRStudioで作成すると`Author`と, `Maintainer`に別れている. 
-- **`Imports`**: パッケージの依存関係, 自動的にインストールされる.  `devtools::use_package("dplyr")`で自動的にDESCRIPTIONファイルに追記できる. 
+- **`Imports`**: パッケージの依存関係, 自動的にインストールされる.  `devtools::use_package("stats")`で自動的にDESCRIPTIONファイルに追記できる. 
 - **`Suggests`**: パッケージでは使わないがテストで使う場合等, 自動でインストールされない. 
 - **`Depends`**: `devtools::check()`で警告が出る場合はここに依存バージョンを書く
 - **`License`**: MITライセンスの場合ファイルを置く必要がある. 
@@ -173,7 +173,7 @@ cat(system("less .Rbuildignore", intern = T), sep = "\n")
 ```{r eval=F, warning=FALSE, message=F} 
 
 # Importsの追記 
-devtools::use_package("dplyr")
+devtools::use_package("stats")
 
 # Autho@R
 person("Shogo", "Konishi", email = "アカウント名@gmail.com", role = c("aut", "cre")) 
@@ -248,7 +248,7 @@ Rスクリプトの中にroxygen形式でコメントを書いてから. **`devt
 - 直接編集しない. 
 - スクリプトにroxygen形式のコメントを書いておいて`devtools::document()`するとNAMESPACEファイルに追記してくれる. 雛形の中に含まれているNAMESPACEファイルは削除しておく.  
 
-```{} 
+```{}  
 # 対象パッケージから全ての関数をインポート(非推奨)  
 import(ggplot2) 
 import(dplyr)
