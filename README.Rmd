@@ -18,7 +18,7 @@ output:
 
 ## devtoolsのインストール
 - Rのパッケージ開発が容易にできる, `roxygen2`や`usethis`等も一緒にインストールされる. 
-```{r eval=F}
+```{r eval=F} 
 
 install.packages("devtools")
 
@@ -33,9 +33,11 @@ install.packages("devtools")
     - `Add a license`: MIT License  
   + **...or push an existing repository from the command line**のところにあるコマンドをコピーしておく.   
 
-```{}
-git remote add origin https://github.com/[アカウント名]/[リポジトリ名]
-git push -u origin master
+```{} 
+git remote add origin https://github.com/[アカウント名]/[リポジトリ名].git
+git branch -M main
+git push -u origin main
+
 ```
 
 
@@ -45,7 +47,6 @@ git push -u origin master
 - RStudioからパッケージの雛形を作成する場合, `File -> New Project -> New Directory -> R package`として, `Create a git repository`にcheckを入れて`Create Project`するとRパッケージの雛形が作られると同時にgitのローカルリポジトリが作られる. 
 - RStudioからは見えないが, パッケージを作成した場所に`.git`というディレクトリができている. ターミナルから`git init`を実行してもできる. 
 - Rのコンソールからパッケージの雛形を作成する場合は`usethis::create_package`を実行する.
-  - フィールドの項目をデフォルトで作成する場合. ``
 
 ```{r eval=F}
 
@@ -71,7 +72,7 @@ usethis::create_package(
 
 ### リモートリポジトリをローカルに複製する場合
 RStudioから`File -> New Project -> Version Control -> Git`を選んで, `Repository URL:`を入れて`Create Project`でローカルリポジトリーにクローンできる.   
-- ローカルリポジトリを~/bin/Rpkg/hello以下に作りたい場合.
+- ローカルリポジトリを~/bin/Rpkg/hello以下に作りたい場合、以下のように記入する.
   - Repository URL: `https://github.com/shkonishi/hello`  
 	- Project directory name: `hello`  
 	- Create project as subdirectory of: `~/bin/Rpkg`  
@@ -80,7 +81,7 @@ RStudioから`File -> New Project -> Version Control -> Git`を選んで, `Repos
 - これらを適宜編集してリモートリポジトリと同期させる.  
 - 後述の操作で作成するファイルも含まれているので, これが初期状態ではない.   
   
-```{r echo=F} 
+```{r echo=F}  
 
 cat(system("tree", intern = T), sep = "\n")
 
