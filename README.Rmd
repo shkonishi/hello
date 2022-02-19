@@ -11,7 +11,7 @@ output:
 
 ***  
 
-&nbsp; Rのパッケージを作成してGitHubで管理する.  
+&nbsp; Rのパッケージを作成してGitHubで管理する為のメモ  
 &nbsp; 調べた内容を適宜追加していく. 
 
 ***  
@@ -42,14 +42,12 @@ git push -u origin main
 
 
 ## Rパッケージの雛形を作成しGitのローカルリポジトリとする 
-
 ### 新規にRパッケージを作成する場合  
 - RStudioからパッケージの雛形を作成する場合, `File -> New Project -> New Directory -> R package`として, `Create a git repository`にcheckを入れて`Create Project`するとRパッケージの雛形が作られると同時にgitのローカルリポジトリが作られる. 
 - RStudioからは見えないが, パッケージを作成した場所に`.git`というディレクトリができている. ターミナルから`git init`を実行してもできる. 
 - Rのコンソールからパッケージの雛形を作成する場合は`usethis::create_package`を実行する.
 
-```{r eval=F}
-
+```{r eval=F, echo=F}
 # 雛形を作成
 path <- "~/pub/bin/rpkg/hello"
 usethis::create_package(
@@ -75,7 +73,7 @@ RStudioから`File -> New Project -> Version Control -> Git`を選んで, `Repos
 - ローカルリポジトリを~/bin/Rpkg/hello以下に作りたい場合、以下のように記入する.
   - Repository URL: `https://github.com/shkonishi/hello`  
 	- Project directory name: `hello`  
-	- Create project as subdirectory of: `~/bin/Rpkg`  
+	- Create project as subdirectory of: `~/Rpkg`  
 
 ### パッケージの中身を確認
 - これらを適宜編集してリモートリポジトリと同期させる.  
@@ -89,12 +87,13 @@ cat(system("tree", intern = T), sep = "\n")
 
 ## ローカルリポジトリとリモートリポジトリを同期. 
 - RStudioでNew Projectを作る際に`Create a git repository`にチェックを入れて`Create Project`すると, 付属のGitクライアントツールを使えるようになる. 
-- Gitペインからよく使うgitコマンド, commit(ファイルの変更等をローカルリポジトリへ反映させる)や, push(ローカルリポジトリの変更をリモートリポジトリへ反映)することができる.   
+- Gitタブからよく使うgitコマンド, commit(ファイルの変更等をローカルリポジトリへ反映させる)や, push(ローカルリポジトリの変更をリモートリポジトリへ反映)することができる.   
 - リモートリポジトリの登録`git remote add`はターミナルを起動して行う(ターミナルはRStudioのGitのペインの歯車マークから起動できる).   
 - 登録した後で`Tools -> Project Options -> Git/SVN`を選択して`Origin`のところがリモートリポジトリのアドレスになっていることを確認する. 
 - ローカルリポジトリ名を変更した場合リモートの新しいアドレスと対応させる`git remote set-url origein https://github.com/shkonishi/hoge.git` .  
   
-```{bash eval=FALSE}  
+```{bash eval=FALSE} 
+# ターミナルから以下を実行
 git remote add origin https://github.com/shkonishi/hello.git
 git commit -m "first commit" 
 git push -u origin master
@@ -110,16 +109,13 @@ git remote set-url origin https://github.com/shkonishi/test.git
 リモートリポジトリにローカルリポジトリの変更が反映されているか確認する. 
   
 ```{r include=FALSE, echo=F}
- 
 if (!identical(character(0), find.package("hello", quiet = T))) {
   remove.packages("hello")
 }
-  
 ```
   
   
 ```{r}
-
 # GitHubからソースパッケージをダウンロード->ビルド->インストールする　 
 devtools::install_github("shkonishi/hello", quiet = T)　
 
@@ -141,7 +137,7 @@ hello(n = 3)
   1. `devtools::document()`を実行する. `NAMESPACE`とドキュメント(`man/*.Rd`)が作られる.
   1. RStudioのBuildペインからCheckを実行する(もしくはコンソールから`devtools::check`)
   1. Install and Restartを実行する. 
-  1. リモートリポジトリと同期する. 
+  1. リモートリポジトリと同期する(commit & push). 
   
 ### .gitignore
 - ここに記述されたファイルの変更はリモートリポジトリに反映されない
@@ -262,9 +258,7 @@ importFrom(magrittr, %>%)
  
 
 ### `devtools::check()`を実行
-- Buildペインの`Build & Reload`をクリック
-- オプションをつけて実行できる. RStudioで`Build` -> `ConfigureBuildTools...`を選択してオプションを追加する. 　`--as-cran` CRANチェックと同様のチェック. 
-`--no-manual`, PDFマニュアルを作成しない. `--no-vignettes` vignetをチェックしない
+- RStudioでやる場合はBuildのタブから`Check`を実行する。その際にオプションをつけて実行できる. RStudioで`Build -> More -> ConfigureBuildTools...`を選択してオプションを追加する. 　`--as-cran` CRANチェックと同様のチェック. `--no-manual`, PDFマニュアルを作成しない. `--no-vignettes` vignetをチェックしない等.
 - ERROR, WARNING, NOTEが出るので各項目を解消する. 
 - いずれも0になったら`Install and Restart`を実行する. ?function名を実行してドキュメントを確認
 リモートリポジトリと同期する. 
@@ -313,7 +307,6 @@ data.frame(license = sapply(mylibs, function(x)packageDescription(x, fields = 'L
 1. データファイルをパッケージに含める.
     - `inst/extdata` を自分で作成してその中におく. 
  
-
 ### バイナリデータをdataディレクトリ置く場合
 - **`usethis::use_data(obj)`** で `data/` にエクスポートされる.   
 - 関数が利用するためのデータを置く場合`usethis::use_data(obj, internal = T)`とする.  `R/sysdata.rda`ができる. ユーザーからは利用できない. 
@@ -364,9 +357,9 @@ dat <- read.table(fp)
 ```
   
 ## コードスタイル整形
-- コードスタイルについて過度に拘るべきではない.   
-- RStudioのメニューバーからRStudio -> Preferences -> Code -> Diagnosticsでいくつかにcheckを入れれば, リアルタイムでいくつかのコードの校正箇所を指摘してくれる.   
-- RStudioのメニューバーからCode -> Show Diagnosticsを実行するとMarkersに修正箇所が示される.   
+- コードスタイルについて過度に拘らない.   
+- RStudioのメニューバーから`RStudio -> Preferences -> Code -> Diagnostics`でいくつかにcheckを入れれば, リアルタイムでいくつかのコードの校正箇所を指摘してくれる.  
+- RStudioのメニューバーから`Code -> Show Diagnostics`を実行するとMarkersに修正箇所が示される.   
 - `lintr::lint_package()`でMarkersペインに, ファイルごとの修正すべき内容と行番号が表示される. 修正箇所をダブルクリックでその行にカーソルが移動する. 見ながらなおしていくと, 行番号と修正箇所が合わなくなるので, 末尾の行番号から修正していく.   
 - `formatR`を使う  
   - `formatR::tidy_app()`shinyアプリが立ち上がって, そこにコードをコピーしてTidy My Codeを実行するとコードが修正される. ggplotの+や, magrittrのパイプ処理別の改行を繋げてしまう. 
@@ -416,7 +409,6 @@ git log --oneline #コミットログを確認
 git commit --amend -m "add binary data" # 直前のコミットメッセージを変更する 
 ```
   
-  
 ### 複数のコミットを 1 つにまとめる`git rebase -i`
 - RStudioからシェルを起動
 - コミットしてない変更がある場合rebaseができない
@@ -453,7 +445,13 @@ git rebase --abort
 - ローカルリポジトリの削除
   - ローカルリポジトリがある場所で, `rm -rf .git`
 
-  
+## アクセストークンの期限切れ
+- Gitのパーソナルアクセストークンが期限切れだとRStudioからのpushで失敗した(Authentication failed)。トークンの再発行をしてから以下を実行するとトークンの設定のメニューが開く。
+
+```{r}
+credentials::set_github_pat()
+```
+
 ## 環境
 ```{r}
 

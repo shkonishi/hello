@@ -1,11 +1,47 @@
 Rのパッケージを作成する
 ================
 S.Konishi
-2021-04-06
+2022-02-20
+
+  - [devtoolsのインストール](#devtoolsのインストール)
+  - [Gitのインストール, GitHubのアカウント作成,
+    リモートリポジトリの新規作成](#gitのインストール-githubのアカウント作成-リモートリポジトリの新規作成)
+  - [Rパッケージの雛形を作成しGitのローカルリポジトリとする](#rパッケージの雛形を作成しgitのローカルリポジトリとする)
+      - [新規にRパッケージを作成する場合](#新規にrパッケージを作成する場合)
+      - [リモートリポジトリをローカルに複製する場合](#リモートリポジトリをローカルに複製する場合)
+      - [パッケージの中身を確認](#パッケージの中身を確認)
+  - [ローカルリポジトリとリモートリポジトリを同期.](#ローカルリポジトリとリモートリポジトリを同期)
+  - [パッケージをGitHubからダウンロードしてインストール](#パッケージをgithubからダウンロードしてインストール)
+  - [ローカルリポジトリの編集](#ローカルリポジトリの編集)
+      - [.gitignore](#gitignore)
+      - [.Rbuildignore](#rbuildignore)
+      - [DESCRIPTION](#description)
+      - [ドキュメント作成](#ドキュメント作成)
+          - [roxygen形式のコメント書式](#roxygen形式のコメント書式)
+          - [`examples`のコードをnot runにする.](#examplesのコードをnot-runにする)
+          - [NAMESPACE](#namespace)
+      - [`devtools::check()`を実行](#devtoolscheckを実行)
+      - [LICENSEを決める](#licenseを決める)
+  - [外部データをパッケージに含める](#外部データをパッケージに含める)
+      - [バイナリデータをdataディレクトリ置く場合](#バイナリデータをdataディレクトリ置く場合)
+      - [`R/`にバイナリデータのdocumentを作成する.](#rにバイナリデータのdocumentを作成する)
+      - [データファイルを`inst/extdata`に置く場合](#データファイルをinstextdataに置く場合)
+  - [コードスタイル整形](#コードスタイル整形)
+  - [README.mdの作成](#readmemdの作成)
+      - [github のmdファイルに目次をつける. Table of
+        Contents](#github-のmdファイルに目次をつける-table-of-contents)
+  - [コミットメッセージについて](#コミットメッセージについて)
+      - [直前のコミットにまとめる`git commit --amend -m
+        "message"`](#直前のコミットにまとめるgit-commit---amend--m-message)
+      - [複数のコミットを 1 つにまとめる`git rebase
+        -i`](#複数のコミットを-1-つにまとめるgit-rebase--i)
+  - [リポジトリの削除](#リポジトリの削除)
+  - [アクセストークンの期限切れ](#アクセストークンの期限切れ)
+  - [環境](#環境)
 
 -----
 
-  Rのパッケージを作成してGitHubで管理する.  
+  Rのパッケージを作成してGitHubで管理する為のメモ  
   調べた内容を適宜追加していく.
 
 -----
@@ -34,8 +70,9 @@ install.packages("devtools")
 
 <!-- end list -->
 
-    git remote add origin https://github.com/[アカウント名]/[リポジトリ名]
-    git push -u origin master
+    git remote add origin https://github.com/[アカウント名]/[リポジトリ名].git
+    git branch -M main
+    git push -u origin main
 
 ## Rパッケージの雛形を作成しGitのローカルリポジトリとする
 
@@ -47,37 +84,15 @@ install.packages("devtools")
   - RStudioからは見えないが, パッケージを作成した場所に`.git`というディレクトリができている. ターミナルから`git
     init`を実行してもできる.
   - Rのコンソールからパッケージの雛形を作成する場合は`usethis::create_package`を実行する.
-      - フィールドの項目をデフォルトで作成する場合. \`\`
-
-<!-- end list -->
-
-``` r
-# 雛形を作成
-path <- "~/pub/bin/rpkg/hello"
-usethis::create_package(
-  path = path,
-  fields = list(
-      Package="hello", # パッケージ名
-      Title="Exersice of R package development", # パッケージタイトル
-      Version = "0.1.0",
-      Author = "Shogo Konishi <hoge@gmail.com>",
-      Maintainer="The package maintainer <hoge@gmail.com>",
-      Description="Exersice of R package development",
-      License='MIT + file LICENSE',
-      Encoding="UTF-8",
-      LazyData="true"
-      )
-)
-```
 
 ### リモートリポジトリをローカルに複製する場合
 
 RStudioから`File -> New Project -> Version Control -> Git`を選んで,
 `Repository URL:`を入れて`Create Project`でローカルリポジトリーにクローンできる.  
-\- ローカルリポジトリを~/bin/Rpkg/hello以下に作りたい場合. - Repository URL:
+\- ローカルリポジトリを\~/bin/Rpkg/hello以下に作りたい場合、以下のように記入する. - Repository URL:
 `https://github.com/shkonishi/hello`  
 \- Project directory name: `hello`  
-\- Create project as subdirectory of: `~/bin/Rpkg`
+\- Create project as subdirectory of: `~/Rpkg`
 
 ### パッケージの中身を確認
 
@@ -86,24 +101,24 @@ RStudioから`File -> New Project -> Version Control -> Git`を選んで,
 
 <!-- end list -->
 
-    ## .
+    ## [01;34m.[00m
     ## ├── DESCRIPTION
     ## ├── LICENSE
     ## ├── NAMESPACE
-    ## ├── R
+    ## ├── [01;34mR[00m
     ## │   ├── hello.R
     ## │   ├── mfuns.R
     ## │   ├── pois_mat.R
     ## │   └── sysdata.rda
     ## ├── README.Rmd
     ## ├── README.md
-    ## ├── data
+    ## ├── [01;34mdata[00m
     ## │   └── pois_mat.rda
     ## ├── hello.Rproj
-    ## ├── inst
-    ## │   └── extdata
+    ## ├── [01;34minst[00m
+    ## │   └── [01;34mextdata[00m
     ## │       └── pois.txt
-    ## └── man
+    ## └── [01;34mman[00m
     ##     ├── hello.Rd
     ##     ├── mfuns.Rd
     ##     └── pois_mat.Rd
@@ -114,7 +129,7 @@ RStudioから`File -> New Project -> Version Control -> Git`を選んで,
 
   - RStudioでNew Projectを作る際に`Create a git repository`にチェックを入れて`Create
     Project`すると, 付属のGitクライアントツールを使えるようになる.
-  - Gitペインからよく使うgitコマンド, commit(ファイルの変更等をローカルリポジトリへ反映させる)や,
+  - Gitタブからよく使うgitコマンド, commit(ファイルの変更等をローカルリポジトリへ反映させる)や,
     push(ローカルリポジトリの変更をリモートリポジトリへ反映)することができる.  
   - リモートリポジトリの登録`git remote
     add`はターミナルを起動して行う(ターミナルはRStudioのGitのペインの歯車マークから起動できる).  
@@ -126,6 +141,7 @@ RStudioから`File -> New Project -> Version Control -> Git`を選んで,
 <!-- end list -->
 
 ``` bash
+# ターミナルから以下を実行
 git remote add origin https://github.com/shkonishi/hello.git
 git commit -m "first commit" 
 git push -u origin master
@@ -162,7 +178,7 @@ hello(n = 3)
         `NAMESPACE`とドキュメント(`man/*.Rd`)が作られる.
     4.  RStudioのBuildペインからCheckを実行する(もしくはコンソールから`devtools::check`)
     5.  Install and Restartを実行する.
-    6.  リモートリポジトリと同期する.
+    6.  リモートリポジトリと同期する(commit & push).
 
 ### .gitignore
 
@@ -350,11 +366,10 @@ Rスクリプトの中にroxygen形式でコメントを書いてから. **`devt
 
 ### `devtools::check()`を実行
 
-  - Buildペインの`Build & Reload`をクリック
-  - オプションをつけて実行できる. RStudioで`Build` -\>
-    `ConfigureBuildTools...`を選択してオプションを追加する.
+  - RStudioでやる場合はBuildのタブから`Check`を実行する。その際にオプションをつけて実行できる.
+    RStudioで`Build -> More -> ConfigureBuildTools...`を選択してオプションを追加する.
     　`--as-cran` CRANチェックと同様のチェック. `--no-manual`, PDFマニュアルを作成しない.
-    `--no-vignettes` vignetをチェックしない
+    `--no-vignettes` vignetをチェックしない等.
   - ERROR, WARNING, NOTEが出るので各項目を解消する.
   - いずれも0になったら`Install and Restart`を実行する. ?function名を実行してドキュメントを確認
     リモートリポジトリと同期する.
@@ -409,7 +424,6 @@ data.frame(license = sapply(mylibs, function(x)packageDescription(x, fields = 'L
     ## knitr                           GPL
     ## kableExtra       MIT + file LICENSE
     ## magrittr         MIT + file LICENSE
-    ## pathview                GPL (>=3.0)
     ## plyr             MIT + file LICENSE
     ## RColorBrewer     Apache License 2.0
     ## RISmed                   GPL (>= 2)
@@ -487,11 +501,11 @@ dat <- read.table(fp)
 
 ## コードスタイル整形
 
-  - コードスタイルについて過度に拘るべきではない.  
-  - RStudioのメニューバーからRStudio -\> Preferences -\> Code -\>
-    Diagnosticsでいくつかにcheckを入れれば,
+  - コードスタイルについて過度に拘らない.  
+  - RStudioのメニューバーから`RStudio -> Preferences -> Code ->
+    Diagnostics`でいくつかにcheckを入れれば,
     リアルタイムでいくつかのコードの校正箇所を指摘してくれる.  
-  - RStudioのメニューバーからCode -\> Show Diagnosticsを実行するとMarkersに修正箇所が示される.  
+  - RStudioのメニューバーから`Code -> Show Diagnostics`を実行するとMarkersに修正箇所が示される.  
   - `lintr::lint_package()`でMarkersペインに, ファイルごとの修正すべき内容と行番号が表示される.
     修正箇所をダブルクリックでその行にカーソルが移動する. 見ながらなおしていくと,
     行番号と修正箇所が合わなくなるので, 末尾の行番号から修正していく.  
@@ -535,8 +549,7 @@ chmod a+x gh-md-toc
 ## コミットメッセージについて
 
   - いい加減に日付ですましてきたが, 最低限変更内容がわかるようにする.
-  - RStudio付属のGitクライアントを開いて, Commit
-        messageのところに変更箇所がわかるように記述する.
+  - RStudio付属のGitクライアントを開いて, Commit messageのところに変更箇所がわかるように記述する.
   - 参考
       - [コミットログ/メッセージ例文集100](https://gist.github.com/mono0926/e6ffd032c384ee4c1cef5a2aa4f778d7)
       - [Gitのコミットメッセージの書き方](https://qiita.com/itosho/items/9565c6ad2ffc24c09364)
@@ -593,19 +606,30 @@ git rebase --abort
   - ローカルリポジトリの削除
       - ローカルリポジトリがある場所で, `rm -rf .git`
 
+## アクセストークンの期限切れ
+
+  - Gitのパーソナルアクセストークンが期限切れだとRStudioからのpushで失敗した(Authentication
+    failed)。トークンの再発行をしてから以下を実行するとトークンの設定のメニューが開く。
+
+<!-- end list -->
+
+``` r
+credentials::set_github_pat()
+```
+
 ## 環境
 
 ``` r
 sessionInfo()
 ```
 
-    ## R version 3.5.2 (2018-12-20)
-    ## Platform: x86_64-apple-darwin15.6.0 (64-bit)
-    ## Running under: macOS High Sierra 10.13.6
+    ## R version 4.0.3 (2020-10-10)
+    ## Platform: x86_64-apple-darwin17.0 (64-bit)
+    ## Running under: macOS Mojave 10.14.5
     ## 
     ## Matrix products: default
-    ## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
-    ## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
     ## 
     ## locale:
     ## [1] ja_JP.UTF-8/ja_JP.UTF-8/ja_JP.UTF-8/C/ja_JP.UTF-8/ja_JP.UTF-8
@@ -617,13 +641,14 @@ sessionInfo()
     ## [1] hello_0.1.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] compiler_3.5.2    prettyunits_1.1.1 remotes_2.2.0     tools_3.5.2      
-    ##  [5] testthat_3.0.2    digest_0.6.27     pkgbuild_1.2.0    pkgload_1.2.0    
-    ##  [9] evaluate_0.14     memoise_2.0.0     lifecycle_1.0.0   rlang_0.4.10     
-    ## [13] cli_2.4.0         curl_4.3          yaml_2.2.1        xfun_0.21        
-    ## [17] fastmap_1.1.0     withr_2.4.1       stringr_1.4.0     knitr_1.31       
-    ## [21] desc_1.2.0        fs_1.5.0          devtools_2.3.2    rprojroot_2.0.2  
-    ## [25] glue_1.4.2        R6_2.5.0          processx_3.4.5    rmarkdown_2.7    
-    ## [29] sessioninfo_1.1.1 callr_3.5.1       purrr_0.3.4       magrittr_2.0.1   
-    ## [33] ps_1.5.0          ellipsis_0.3.1    htmltools_0.5.1.1 usethis_2.0.1    
-    ## [37] assertthat_0.2.1  stringi_1.5.3     cachem_1.0.4      crayon_1.4.1
+    ##  [1] compiler_4.0.3    sys_3.4           prettyunits_1.1.1 remotes_2.4.0    
+    ##  [5] tools_4.0.3       testthat_3.0.4    digest_0.6.27     pkgbuild_1.2.0   
+    ##  [9] pkgload_1.2.1     evaluate_0.14     memoise_2.0.0     lifecycle_1.0.0  
+    ## [13] rlang_0.4.11      cli_3.0.1         rstudioapi_0.13   curl_4.3.2       
+    ## [17] yaml_2.2.1        xfun_0.25         fastmap_1.1.0     withr_2.4.2      
+    ## [21] stringr_1.4.0     knitr_1.33        askpass_1.1       desc_1.3.0       
+    ## [25] fs_1.5.0          devtools_2.4.2    rprojroot_2.0.2   glue_1.4.2       
+    ## [29] R6_2.5.1          processx_3.5.2    rmarkdown_2.10    sessioninfo_1.1.1
+    ## [33] callr_3.7.0       purrr_0.3.4       magrittr_2.0.1    credentials_1.3.1
+    ## [37] ps_1.6.0          ellipsis_0.3.2    htmltools_0.5.2   usethis_2.0.1    
+    ## [41] stringi_1.7.4     openssl_1.4.5     cachem_1.0.6      crayon_1.4.1
