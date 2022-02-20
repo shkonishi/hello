@@ -12,10 +12,6 @@ fun1(x)
 fun2(x, y)
 
 fun3(x, y, z)
-
-fun2(x, y)
-
-fun3(x, y, z)
 }
 \arguments{
 \item{x}{a common argument}

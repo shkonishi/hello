@@ -10,7 +10,7 @@ S.Konishi
       - [新規にRパッケージを作成する場合](#新規にrパッケージを作成する場合)
       - [リモートリポジトリをローカルに複製する場合](#リモートリポジトリをローカルに複製する場合)
       - [パッケージの中身を確認](#パッケージの中身を確認)
-  - [ローカルリポジトリとリモートリポジトリを同期.](#ローカルリポジトリとリモートリポジトリを同期)
+  - [ローカルリポジトリとリモートリポジトリを同期](#ローカルリポジトリとリモートリポジトリを同期)
   - [パッケージをGitHubからダウンロードしてインストール](#パッケージをgithubからダウンロードしてインストール)
   - [ローカルリポジトリの編集](#ローカルリポジトリの編集)
       - [.gitignore](#gitignore)
@@ -18,6 +18,7 @@ S.Konishi
       - [DESCRIPTION](#description)
       - [ドキュメント作成](#ドキュメント作成)
           - [roxygen形式のコメント書式](#roxygen形式のコメント書式)
+          - [複数の関数を1つのRdファイルに含める](#複数の関数を1つのrdファイルに含める)
           - [`examples`のコードをnot runにする.](#examplesのコードをnot-runにする)
           - [NAMESPACE](#namespace)
       - [`devtools::check()`を実行](#devtoolscheckを実行)
@@ -42,7 +43,7 @@ S.Konishi
 -----
 
   Rのパッケージを作成してGitHubで管理する為のメモ  
-  調べた内容を適宜追加していく.
+  調べた内容を適宜追加していくので一部古い内容がある
 
 -----
 
@@ -88,11 +89,12 @@ install.packages("devtools")
 ### リモートリポジトリをローカルに複製する場合
 
 RStudioから`File -> New Project -> Version Control -> Git`を選んで,
-`Repository URL:`を入れて`Create Project`でローカルリポジトリーにクローンできる.  
-\- ローカルリポジトリを\~/bin/Rpkg/hello以下に作りたい場合、以下のように記入する. - Repository URL:
-`https://github.com/shkonishi/hello`  
-\- Project directory name: `hello`  
-\- Create project as subdirectory of: `~/Rpkg`
+`Repository URL:`を入れて`Create Project`でローカルリポジトリーにクローンできる.
+例えばローカルリポジトリを\~/Rpkg/hello以下に作りたい場合、以下のように記入する.
+
+  - Repository URL: `https://github.com/shkonishi/hello`  
+  - Project directory name: `hello`  
+  - Create project as subdirectory of: `~/Rpkg`
 
 ### パッケージの中身を確認
 
@@ -125,34 +127,41 @@ RStudioから`File -> New Project -> Version Control -> Git`を選んで,
     ## 
     ## 5 directories, 15 files
 
-## ローカルリポジトリとリモートリポジトリを同期.
+## ローカルリポジトリとリモートリポジトリを同期
 
   - RStudioでNew Projectを作る際に`Create a git repository`にチェックを入れて`Create
     Project`すると, 付属のGitクライアントツールを使えるようになる.
+
   - Gitタブからよく使うgitコマンド, commit(ファイルの変更等をローカルリポジトリへ反映させる)や,
-    push(ローカルリポジトリの変更をリモートリポジトリへ反映)することができる.  
+    push(ローカルリポジトリの変更をリモートリポジトリへ反映)することができる.
+
   - リモートリポジトリの登録`git remote
-    add`はターミナルを起動して行う(ターミナルはRStudioのGitのペインの歯車マークから起動できる).  
+    add`はターミナルを起動して行う(ターミナルはRStudioのGitのタブの歯車マークから起動できる).  
+
   - 登録した後で`Tools -> Project Options ->
     Git/SVN`を選択して`Origin`のところがリモートリポジトリのアドレスになっていることを確認する.
+
   - ローカルリポジトリ名を変更した場合リモートの新しいアドレスと対応させる`git remote set-url origein
     https://github.com/shkonishi/hoge.git` .
 
 <!-- end list -->
 
 ``` bash
-# ターミナルから以下を実行
-git remote add origin https://github.com/shkonishi/hello.git
-git commit -m "first commit" 
-git push -u origin master
+# # ターミナルから以下を実行
+# git remote add origin https://github.com/shkonishi/hello.git
+# git commit -m "first commit" 
+# git push -u origin master
+git remote add origin https://github.com/[アカウント名]/[リポジトリ名].git
+git branch -M main
+git push -u origin main
 
-# ローカルリポジトリ名を変更した場合リモートの新しいアドレスと対応させる. 
+# ローカルリポジトリ名を変更した場合リモートの新しいアドレスと対応させる
 git remote set-url origin https://github.com/shkonishi/test.git
 ```
 
 ## パッケージをGitHubからダウンロードしてインストール
 
-ここまでで, RのパッケージがGitHubからダウンロード可能になっているので, インストールしてみる.
+ここまででRのパッケージがGitHubからダウンロード可能になっているので、インストールしてみる.
 リモートリポジトリにローカルリポジトリの変更が反映されているか確認する.
 
 ``` r
@@ -168,10 +177,11 @@ hello(n = 3)
 
 ## ローカルリポジトリの編集
 
-  - 最初にパッケジのメタデータ等のファイルを作成する.
-    1.  各種ファイルを編集`.gitignore`, `DESCRIPTION`, `.Rbuildignore`
-    2.  必要に応じて`LICENCE`, `README.md`を作成する.
+  - 最初にパッケージのメタデータ等のファイルを作成する.　以下の各種ファイルを編集`.gitignore`, `DESCRIPTION`,
+    `.Rbuildignore`必要に応じて`LICENCE`, `README.md`を作成する.
+
   - パッケージに変更を加えたら, だいたい以下の流れを繰り返す.
+    
     1.  Rスクリプトを書いて, `R/`ディレクトリに置く.
     2.  ドキュメントの作成(スクリプトの中にroxygen形式のコメントを書く. )
     3.  `devtools::document()`を実行する.
@@ -265,21 +275,27 @@ devtools::use_package("stats")
 person("Shogo", "Konishi", email = "アカウント名@gmail.com", role = c("aut", "cre")) 
 ```
 
-    ## Package: hello
-    ## Type: Package
-    ## Title: Exersice of R package development
-    ## Version: 0.1.0
-    ## Author: Shogo Konishi <shkonishi@gmail.com> 
-    ## Maintainer: Shogo Konishi <shkonishi@gmail.com>
-    ## Imports: 
-    ##     stats
-    ## Description: Exersice of R package development
-    ##     Use four spaces when indenting paragraphs within the Description.
-    ## Depends: R (>= 2.10)
-    ## License: MIT + file LICENSE
-    ## Encoding: UTF-8
-    ## LazyData: true
-    ## RoxygenNote: 7.1.1
+    .
+    ├── DESCRIPTION
+    ├── LICENSE
+    ├── NAMESPACE
+    ├── R
+    │   ├── hello.R
+    │   ├── mfuns.R
+    │   ├── pois_mat.R
+    │   └── sysdata.rda
+    ├── README.Rmd
+    ├── README.md
+    ├── data
+    │   └── pois_mat.rda
+    ├── hello.Rproj
+    ├── inst
+    │   └── extdata
+    │       └── pois.txt
+    └── man
+        ├── hello.Rd
+        ├── mfuns.Rd
+        └── pois_mat.Rd
 
 ### ドキュメント作成
 
@@ -307,7 +323,7 @@ Rスクリプトの中にroxygen形式でコメントを書いてから. **`devt
 #' 
 ```
 
-  - **`@usage`** 書式. ドキュメントとスクリプトで引数の順番が違っているとエラー
+  - **`@usage`** 書式. ドキュメントとスクリプトで引数の順番が違っているとエラー(＠paramがあれば不要)
   - **`@param`** 引数. 一箇所で複数の引数の場合, **`@param x,y ...`**  
   - **`@return`** 関数の出力  
   - **`@examples`** `devtools::check()`で実行される.
@@ -333,6 +349,31 @@ Rスクリプトの中にroxygen形式でコメントを書いてから. **`devt
 #' @importFrom package function  
 #' @importClassesFrom package class 
 #' @export  
+```
+
+#### 複数の関数を1つのRdファイルに含める
+
+Rのgrep関数のように、1つのドキュメントの中に複数の関数を記述する. 共通する引数をまとめて記載できる
+
+``` r
+#' Multiple functions  
+#' 
+#' multi-function in an Rd file.  
+#' 
+#' @param x a common argument
+#' @param y fun2 specific
+#' @param z fun3 specific
+#' 
+#' @name mfuns
+#' 
+#' @rdname mfuns
+fun1 <- function(x) x 
+
+#' @rdname mfuns
+fun2 <- function(x, y) x + y
+
+#' @rdname mfuns
+fun3 <- function(x, y, z) x + y + z
 ```
 
 #### `examples`のコードをnot runにする.

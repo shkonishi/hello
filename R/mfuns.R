@@ -2,10 +2,6 @@
 #' 
 #' multi-function in an Rd file.  
 #' 
-#' @usage fun1(x)
-#' @usage fun2(x, y)
-#' @usage fun3(x, y, z)
-#' 
 #' @param x a common argument
 #' @param y fun2 specific
 #' @param z fun3 specific
