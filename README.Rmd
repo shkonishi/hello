@@ -81,7 +81,7 @@ RStudioから`File -> New Project -> Version Control -> Git`を選んで, `Repos
 - 後述の操作で作成するファイルも含まれているので, これが初期状態ではない.   
   
 ```{bash echo=F}  
-tree .
+tree -n
 ```
 
 ## ローカルリポジトリとリモートリポジトリを同期
@@ -338,7 +338,7 @@ library(hello)
  
 ```{r}
 # 自分のパッケージが依存しているライブラリを取得する 
-mylibs <- unlist(strsplit(packageDescription("rsko", fields = 'Imports'), ",\n"))
+mylibs <- unlist(strsplit(packageDescription("hello", fields = 'Imports'), ",\n"))
 
 # それぞれのパッケージのDESCRIPTIONファイルのLicenseフィールドを抜き出す. 
 data.frame(license = sapply(mylibs, function(x)packageDescription(x, fields = 'License')))
